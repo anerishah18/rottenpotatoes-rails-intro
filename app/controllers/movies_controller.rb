@@ -11,17 +11,25 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = Movie.order(:rating).select(:rating).map(&:rating).uniq
-    @checked_ratings = check
-    @checked_ratings.each do |rating|
-      params[rating] = true
+    sort = params[:sort] || session[:sort]
+    if sort == 'title'
+        ordering,@title_header = {:title => :asc}, 'hilite'
+    elsif sort == 'rating'
+        ordering,@date_header = {:rating => :asc}, 'hilite'
     end
-
-    if params[:sort]
-      @movies = Movie.order(params[:sort])
-    else
-      @movies = Movie.where(:rating => @checked_ratings)
+    @all_ratings = Movie.all_ratings
+    @checked_ratings = params[:ratings] || session[:ratings] || {}
+    if @checked_ratings == {}
+      @checked_ratings = Hash[@all_ratings.map {|rating| [rating, rating]}]
     end
+      
+    if params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
+      session[:sort] = sort
+      session[:ratings] = @checked_ratings
+      redirect_to :sort => sort, :ratings => @checked_ratings and return
+    end
+      
+    @movies = Movie.where(rating: @checked_ratings.keys).order(ordering)
   end
 
   def new
