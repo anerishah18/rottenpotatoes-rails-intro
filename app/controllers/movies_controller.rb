@@ -13,9 +13,9 @@ class MoviesController < ApplicationController
   def index
     sort = params[:sort] || session[:sort]
     if sort == 'title'
-        ordering,@title_header = {:title => :asc}, 'hilite'
+        ordering = {:title => :asc}
     elsif sort == 'rating'
-        ordering,@date_header = {:rating => :asc}, 'hilite'
+        ordering = {:rating => :asc}
     end
     @all_ratings = Movie.all_ratings
     @checked_ratings = params[:ratings] || session[:ratings] || {}
