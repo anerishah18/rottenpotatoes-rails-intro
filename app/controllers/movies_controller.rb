@@ -32,7 +32,11 @@ class MoviesController < ApplicationController
       redirect_to movies_path(:sort => session[:sort], :ratings => session[:ratings])
     end
       
-    @checked_ratings = session[:ratings] ? session[:ratings].keys : Movie.all_ratings
+    if session[:ratings]
+        @checked_ratings = session[:ratings]
+    else
+        @checked_ratings = Hash[@all_ratings.collect {|rating| [rating, rating]}]
+    #@checked_ratings = session[:ratings] ? session[:ratings].keys : Movie.all_ratings
     @movies = Movie.where(rating: @checked_ratings.keys).order(ordering)
   end
 
