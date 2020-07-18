@@ -38,7 +38,7 @@ class MoviesController < ApplicationController
         @checked_ratings = Hash[@all_ratings.collect {|rating| [rating, rating]}]
     end
     #@checked_ratings = session[:ratings] ? session[:ratings].keys : Movie.all_ratings
-    @movies = Movie.where(rating: @checked_ratings.keys).order(ordering)
+    @movies = Movie.where(rating: @checked_ratings).order(ordering)
   end
 
   def new
