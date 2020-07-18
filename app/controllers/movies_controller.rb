@@ -11,21 +11,22 @@ class MoviesController < ApplicationController
   end
 
   def index
-    sort = params[:sort] || session[:sort]
+    sort = session[:sort] || params[:sort]
     if sort == 'title'
         ordering = {:title => :asc}
     elsif sort == 'rating'
         ordering = {:rating => :asc}
     end
     @all_ratings = Movie.all_ratings
-    @checked_ratings = params[:ratings] || session[:ratings] || {}
+    @checked_ratings = session[:ratings] || params[:ratings] || {}
     if @checked_ratings == {}
       @checked_ratings = Hash[@all_ratings.collect {|rating| [rating, rating]}]
     end
       
-    if params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
+    if session[:sort] != params[:sort] or session[:ratings] != params[:ratings]
       session[:sort] = sort
       session[:ratings] = @checked_ratings
+      flash.keep
       redirect_to :sort => sort, :ratings => @checked_ratings and return
     end
       
