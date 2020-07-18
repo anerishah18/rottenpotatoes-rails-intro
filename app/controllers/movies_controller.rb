@@ -29,9 +29,7 @@ class MoviesController < ApplicationController
       flash.keep
       redirect_to :sort => sort, :ratings => @checked_ratings and return
     end
-      
-      
-      
+   
     @movies = Movie.where(rating: @checked_ratings.keys).order(ordering)
   end
 
