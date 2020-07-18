@@ -14,8 +14,8 @@ class MoviesController < ApplicationController
     sort = params[:sort] || session[:sort]
     if sort == 'title'
         ordering = {:title => :asc}
-    elsif sort == 'rating'
-        ordering = {:rating => :asc}
+    elsif sort == 'release_date'
+        ordering = {:release_date => :asc}
     end
     @all_ratings = Movie.all_ratings
     @checked_ratings = params[:ratings] || session[:ratings] || {}
@@ -26,6 +26,7 @@ class MoviesController < ApplicationController
     if params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
       session[:sort] = sort
       session[:ratings] = @checked_ratings
+      flash.keep
       redirect_to :sort => sort, :ratings => @checked_ratings and return
     end
       
