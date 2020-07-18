@@ -11,25 +11,28 @@ class MoviesController < ApplicationController
   end
 
   def index
-    sort = session[:sort] || params[:sort]
-    if sort == 'title'
+    session[:ratings] = params[:ratings] if params[:ratings].present?
+    session[:sort_by] = params[:sort_by] if params[:sort_by].present?
+    #sort = session[:sort] || params[:sort]
+    if session[:sort] == 'title'
         ordering = {:title => :asc}
-    elsif sort == 'rating'
+    elsif session[:sort] == 'rating'
         ordering = {:rating => :asc}
     end
-    @all_ratings = Movie.all_ratings
-    @checked_ratings = session[:ratings] || params[:ratings] || {}
-    if @checked_ratings == {}
-      @checked_ratings = Hash[@all_ratings.collect {|rating| [rating, rating]}]
-    end
+    #@all_ratings = Movie.all_ratings
+    #@checked_ratings = session[:ratings] || params[:ratings] || {}
+    #if @checked_ratings == {}
+    #  @checked_ratings = Hash[@all_ratings.collect {|rating| [rating, rating]}]
+    #end
       
     if session[:sort] != params[:sort] or session[:ratings] != params[:ratings]
-      session[:sort] = sort
-      session[:ratings] = @checked_ratings
+      #session[:sort] = sort
+      #session[:ratings] = @checked_ratings
       flash.keep
-      redirect_to :sort => sort, :ratings => @checked_ratings and return
+      redirect_to movies_path(:sort => session[:sort], :ratings => session[:ratings])
     end
       
+    @checked_ratings = session[:ratings] ? session[:ratings].keys : Movie.all_ratings
     @movies = Movie.where(rating: @checked_ratings.keys).order(ordering)
   end
 
