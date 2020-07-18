@@ -11,13 +11,13 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.all_ratings
     sort = params[:sort] || session[:sort]
     if sort == 'title'
         ordering = {:title => :asc}
     elsif sort == 'release_date'
         ordering = {:release_date => :asc}
     end
-    @all_ratings = Movie.all_ratings
     @checked_ratings = params[:ratings] || session[:ratings] || {}
     if @checked_ratings == {}
       @checked_ratings = Hash[@all_ratings.collect {|rating| [rating, rating]}]
